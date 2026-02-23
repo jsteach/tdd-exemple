@@ -6,7 +6,12 @@
         {
             "label": "Build nob",
             "type": "shell",
-            "command": "${workspaceFolder}/Tools/w64devkit/bin/cc.exe",
+            "command": "cc",
+            "options": {
+                "env": {
+                "PATH": "${workspaceFolder}/Tools/w64devkit/bin:${env:PATH}"
+                }
+            },
             "args": [
                 "-ggdb3",
                 "nob.c",

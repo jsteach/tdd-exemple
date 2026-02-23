@@ -1,4 +1,4 @@
-#define nob_cc(cmd) nob_cmd_append(cmd, "./Tools/w64devkit/bin/cc.exe")
+#define nob_cc(cmd) nob_cmd_append(cmd, "cc")
 
 #define NOB_IMPLEMENTATION
 #define NOB_STRIP_PREFIX
@@ -28,18 +28,25 @@ int main(int argc, char** argv){
   if(!build_rlImGui(&o_files)) return 1;
 
   Cmd cmd = {0};
-
   nob_cc(&cmd);
   cmd_append(&cmd,"-ggdb3");
-  nob_walk_dir("./src", read_entire_dir_visit, .data = &cmd );
-  // nob_cc_inputs(&cmd, "./src/main.cpp",temp_sprintf("./src/%s.cpp",LAB_NAME));
-  cmd_append(&cmd,RAYLIB_INCLUDES);
-  cmd_append(&cmd,RLIMGUI_INCLUDES);
-  for(int i =0; i < o_files.count;++i){
-    cmd_append(&cmd,o_files.items[i]);
-  }
-  nob_cc_output(&cmd, "./Deployment/game.exe");
-  cmd_append(&cmd,RAYLIB_LFLAGS);
-  cmd_append(&cmd,RLIMGUI_LFLAGS);
+  nob_walk_dir("./lib", read_entire_dir_visit, .data = &cmd );
+  cmd_append(&cmd,"-I./lib");
+  cmd_append(&cmd,"-I.");
+  cmd_append(&cmd,"./test/main.cpp","-o","Deployment/test.exe");
   if(!cmd_run_sync_and_reset(&cmd)) return 1;
+
+  // nob_cc(&cmd);
+  // cmd_append(&cmd,"-ggdb3");
+  // nob_walk_dir("./src", read_entire_dir_visit, .data = &cmd );
+  // // nob_cc_inputs(&cmd, "./src/main.cpp",temp_sprintf("./src/%s.cpp",LAB_NAME));
+  // cmd_append(&cmd,RAYLIB_INCLUDES);
+  // cmd_append(&cmd,RLIMGUI_INCLUDES);
+  // for(int i =0; i < o_files.count;++i){
+  //   cmd_append(&cmd,o_files.items[i]);
+  // }
+  // nob_cc_output(&cmd, "./Deployment/game.exe");
+  // cmd_append(&cmd,RAYLIB_LFLAGS);
+  // cmd_append(&cmd,RLIMGUI_LFLAGS);
+  // if(!cmd_run_sync_and_reset(&cmd)) return 1;
 }
